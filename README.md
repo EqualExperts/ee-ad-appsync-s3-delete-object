@@ -1,0 +1,1 @@
+# ee-ad-appsync-s3-delete-object
