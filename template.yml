@@ -26,7 +26,7 @@ Resources:
       LogGroupName: !Ref LogGroup
       FilterPattern: '-"START RequestId:" -"END RequestId:" -"REPORT RequestId"'
       DestinationArn:
-        Fn::ImportValue: !Sub ${Environment}-LogsDestinationArn
+        Fn::ImportValue: !Sub ${Environment}:LogsDestinationArn
 
   LogGroup:
     Type: AWS::Logs::LogGroup
