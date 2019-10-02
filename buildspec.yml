@@ -1,0 +1,32 @@
+---
+version: 0.2
+
+phases:
+
+  install:
+    runtime-versions:
+      golang: 1.13
+    commands:
+      - env
+      - echo "machine github.com login ${GIT_HUB_OAUTH_TOKEN}" >> ~/.netrc
+
+  pre_build:
+    commands:
+      - go vet .
+      - go test ./...
+
+  build:
+    commands:
+      - GOOS=linux go build -ldflags "-X main.CommitID=${CODEBUILD_SOURCE_VERSION}" -o main
+      - zip main.zip ./main
+
+  post_build:
+    commands:
+      - cp template.yml cloudformation.yaml
+      - 'sed -i ''s/CodeUri: .\/main.zip/CodeUri: {Bucket: !Ref ArtifactBucketName, Key: !Sub "${ArtifactBucketPath}\/main.zip"}/g'' cloudformation.yaml'
+      - echo "build completed on `date`"
+
+artifacts:
+  files:
+    - cloudformation.yaml
+    - main.zip
