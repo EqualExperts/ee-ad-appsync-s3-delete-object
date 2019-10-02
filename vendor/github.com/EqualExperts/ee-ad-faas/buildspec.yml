@@ -1,0 +1,24 @@
+---
+version: 0.2
+
+phases:
+
+  install:
+    commands:
+      - env
+      - echo "machine github.com login ${GIT_HUB_OAUTH_TOKEN}" >> ~/.netrc
+
+  pre_build:
+    commands:
+      - go get ${BUILD_PACKAGE}
+      - cd "/go/src/${BUILD_PACKAGE}"
+
+      - go vet .
+      - go test ./...
+
+  post_build:
+    commands:
+      - echo "build completed on `date`"
+
+artifacts:
+  discard-paths: true
